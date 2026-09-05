@@ -1,17 +1,19 @@
 package com.project.Event_Hub.Event.Entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.cglib.core.Local;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
 
 @Entity
 @Data
-@Table(name = "Events")
-public class Events {
+@Table(name = "Event")
+@AllArgsConstructor
+@NoArgsConstructor
+public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long Id;
@@ -28,9 +30,9 @@ public class Events {
     @Column(nullable = false,length = 200 )
     private String Venue;
 
+    private String ThemeOfTheProject;
+
     public String Organizer;
-
-
 
     private int Capacity ;
 
