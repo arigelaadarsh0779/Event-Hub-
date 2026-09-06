@@ -33,8 +33,11 @@ public class Event {
     private String ThemeOfTheProject;
 
     public String Organizer;
+    private int TotalSeats ;
 
-    private int Capacity ;
+
+    private int AvailableSeats;
+
 
 
 

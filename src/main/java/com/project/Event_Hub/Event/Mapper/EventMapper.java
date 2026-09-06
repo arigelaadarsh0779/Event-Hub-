@@ -21,6 +21,8 @@ public class EventMapper {
         event.setVenue(dto.getVenue());
         event.setThemeOfTheProject(dto.getThemeOfTheProject());
         event.setOrganizer(dto.getOrganizer());
+        event.setTotalSeats(dto.getTotalSeats());
+        event.setAvailableSeats(dto.getRemainingSeats());
         return event;
 
     }
@@ -36,6 +38,9 @@ public class EventMapper {
         dto.setVenue(event.getVenue());
         dto.setThemeOfTheProject(event.getThemeOfTheProject());
         dto.setOrganizer(event.getOrganizer());
+        dto.setTotalSeats(event.getTotalSeats());
+        dto.setRemainingSeats(event.getAvailableSeats());
+
         return dto;
     }
 

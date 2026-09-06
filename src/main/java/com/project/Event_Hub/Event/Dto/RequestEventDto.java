@@ -24,5 +24,8 @@ public class RequestEventDto {
         private String ThemeOfTheProject;
 
         private String Organizer;
+          private int RemainingSeats;
+          private int TotalSeats;
+
     }
 

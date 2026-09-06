@@ -28,6 +28,7 @@ public class ResponseEventDto {
 
     public String Organizer;
 
-    private int Capacity ;
+    private int TotalSeats ;
+    private int RemainingSeats;
 
 }

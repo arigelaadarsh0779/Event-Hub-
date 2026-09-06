@@ -31,7 +31,10 @@ public class EventService implements EventsInterface{
         event.setVenue(dto.getVenue());
         event.setThemeOfTheProject(dto.getThemeOfTheProject());
         event.setOrganizer(dto.getOrganizer());
-       eventRepository.save(event);
+        event.setAvailableSeats(dto.getRemainingSeats());
+        event.setTotalSeats(dto.getTotalSeats());
+
+        eventRepository.save(event);
        return "Event Created Sucessfully";
     }
 
@@ -50,6 +53,8 @@ public class EventService implements EventsInterface{
         event.setVenue(dto.getVenue());
         event.setThemeOfTheProject(dto.getThemeOfTheProject());
         event.setOrganizer(dto.getOrganizer());
+        event.setAvailableSeats(dto.getRemainingSeats());
+        event.setTotalSeats(dto.getTotalSeats());
 
         Event ee =eventRepository.save(event);
         return eventmapper.objToRespose(ee);
