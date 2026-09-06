@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event,Long> {
 
-    List<Event> findByEventTitle(String title);
-    List<Event> findByEventTheme(String theme);
-    List<Event> findByEventVenue(String venue);
+    List<Event> findByTitle(String Title);
+    List<Event> findByThemeOfTheProject(String ThemeOfTheProject);
+    List<Event> findByVenue(String Venue);
 }
