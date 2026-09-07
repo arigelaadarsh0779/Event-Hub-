@@ -1,10 +1,9 @@
 package com.project.Event_Hub.Booking.Controller;
 
-import com.project.Event_Hub.Auth.Entity.User;
 import com.project.Event_Hub.Booking.Dto.BookingRequestDto;
 import com.project.Event_Hub.Booking.Dto.BookingResponseDto;
 import com.project.Event_Hub.Booking.Service.BookingService;
-import com.project.Event_Hub.Event.Entity.Event;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,34 +16,33 @@ public class BookingController {
 
     private final BookingService bookingService;
 
-    @PostMapping
+
+    // GET ALL BOOKINGS
+    @GetMapping
+    public List<BookingResponseDto> getAll() {
+        return bookingService.getAllbookings();
+    }
+
+
+    // CREATE BOOKING
+    @PostMapping("/createBooking")
     public BookingResponseDto createBooking(
             @RequestBody BookingRequestDto dto) {
 
         return bookingService.createBooking(dto);
     }
 
-    @GetMapping("/{id}")
-    public BookingResponseDto getBookingById(
+
+    // GET ALL BOOKINGS BY USER ID
+    @GetMapping("/user/{id}")
+    public List<BookingResponseDto> getBookingsByUserId(
             @PathVariable long id) {
 
-        return bookingService.getBookingById(id);
+        return bookingService.getBookingsByUserId(id);
     }
 
-    @GetMapping("/user")
-    public List<BookingResponseDto> getBookingsByUser(
-            @RequestBody User user) {
 
-        return bookingService.getBookingsByUser(user);
-    }
-
-    @GetMapping("/event")
-    public List<BookingResponseDto> getBookingsByEvent(
-            @RequestBody Event event) {
-
-        return bookingService.getBookingsByEvent(event);
-    }
-
+    // CANCEL BOOKING BY BOOKING ID
     @PutMapping("/{id}/cancel")
     public BookingResponseDto cancelBookingById(
             @PathVariable long id) {
@@ -52,6 +50,8 @@ public class BookingController {
         return bookingService.cancelBookingById(id);
     }
 
+
+    // CHECK AVAILABLE SEATS BY EVENT ID
     @GetMapping("/availability/{id}")
     public int checkAvailabilityByEvent(
             @PathVariable long id) {

@@ -15,4 +15,5 @@ public interface BookingInterface {
     List<BookingResponseDto>getBookingsByEvent(Event event);
     BookingResponseDto cancelBookingById(long id);
     int checkAvailabilityByEvent(long id);
+    List<BookingResponseDto> getAllbookings();
 }

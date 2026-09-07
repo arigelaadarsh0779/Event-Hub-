@@ -12,7 +12,7 @@ public class BookingMapper {
   public BookingResponseDto convertObjtoResponse(Bookings bookings){
       BookingResponseDto dto = new BookingResponseDto();
       dto.setName(bookings.getUser().getName());
-      dto.setBookingDate(bookings.getBookingdate());
+      dto.setBookingDate(bookings.getBookingDate());
       dto.setStatus(bookings.getStatus());
       dto.setEventId(bookings.getEvent().getId());
       dto.setBookingNumber(bookings.getBookingNumber());

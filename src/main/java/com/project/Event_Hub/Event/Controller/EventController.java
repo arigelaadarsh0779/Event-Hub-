@@ -28,7 +28,7 @@ public class EventController {
         eventService.createEvent(ev);
         return "Event created Susccesfully";
     }
-    @PostMapping("/edit/{id}")
+    @PostMapping("/edit/{userid}")
     public ResponseEventDto editEvent(@PathVariable long  id , @RequestBody RequestEventDto ev){
         return eventService.manageEventById(id,ev);
     }
@@ -44,7 +44,7 @@ public class EventController {
     public List<ResponseEventDto> findByeventVenue(@PathVariable String venue){
         return eventService.findByEventVenue(venue);
     }
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete/{userid}")
     public String deleteByid(@PathVariable long id){
         eventService.deleteEventById(id);
         return "Deleted Sucessfull";

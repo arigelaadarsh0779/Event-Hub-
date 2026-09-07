@@ -18,15 +18,19 @@ public class Bookings {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private int NumberOfSeats;
 
-    private LocalDateTime Bookingdate;
+    private int numberOfSeats;
+
+    private LocalDateTime bookingDate;
+
     @Enumerated(EnumType.STRING)
     private BookingStatus status;
 
-    private String BookingNumber;
+    private String bookingNumber;
+
     @ManyToOne
     private Event event;
+
     @ManyToOne
     private User user;
 }
