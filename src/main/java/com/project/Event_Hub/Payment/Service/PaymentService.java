@@ -8,6 +8,9 @@ import com.project.Event_Hub.Payment.Entity.PaymentsEnum;
 import com.project.Event_Hub.Payment.Entity.PaymetEntity;
 import com.project.Event_Hub.Payment.Mapper.PaymentMapper;
 import com.project.Event_Hub.Payment.Repository.PaymentRepository;
+import com.project.Event_Hub.Booking.Entity.BookingStatus;
+import com.project.Event_Hub.Payment.Dto.PaymentVerifyRequestDto;
+import com.razorpay.Utils;
 import com.razorpay.Order;
 import org.springframework.beans.factory.annotation.Value;
 import com.razorpay.RazorpayClient;
@@ -66,6 +69,54 @@ public class PaymentService {
 
     }
 
+    public boolean verifyPayment(PaymentVerifyRequestDto dto) throws Exception {
+
+        PaymetEntity payment = paymentRepository
+                .findByRazorpayOrderId(dto.getRazorpayOrderId())
+                .orElseThrow(() -> new RuntimeException("Payment not found"));
+
+        System.out.println("Saved Order ID: " + payment.getRazorpayOrderId());
+        System.out.println("Received Order ID: " + dto.getRazorpayOrderId());
+        System.out.println("Payment ID: " + dto.getRazorpayPaymentId());
+        System.out.println("Signature: " + dto.getRazorpaySignature());
+
+        JSONObject options = new JSONObject();
+
+        options.put("razorpay_order_id",
+                payment.getRazorpayOrderId());
+
+        options.put("razorpay_payment_id",
+                dto.getRazorpayPaymentId());
+
+        options.put("razorpay_signature",
+                dto.getRazorpaySignature());
+
+        boolean verified =
+                Utils.verifyPaymentSignature(options, keySecret);
+
+        System.out.println("Verified: " + verified);
+
+        if (!verified) {
+            return false;
+        }
+
+        // Payment successful
+        payment.setRazorpayPaymetId(
+                dto.getRazorpayPaymentId()
+        );
+
+        payment.setStatus(PaymentsEnum.SUCCESS);
+
+        // Confirm booking
+        Bookings booking = payment.getBooking();
+
+        booking.setStatus(BookingStatus.CONFIRMED);
+
+        paymentRepository.save(payment);
+        bookingsRepository.save(booking);
+
+        return true;
+    }
 
 
 }

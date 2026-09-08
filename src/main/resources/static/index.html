@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -86,7 +85,8 @@
 
     async function payNow() {
 
-        const bookingId = document.getElementById("bookingId").value;
+        const bookingId =
+            document.getElementById("bookingId").value;
 
         if (!bookingId) {
             alert("Please enter Booking ID");
@@ -95,16 +95,19 @@
 
         try {
 
-            // Create Razorpay order
-                 const response = await fetch("/api/payment/createorder", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                bookingId: Number(bookingId)
-            })
-        });
+            // ==========================================
+            // 1. CREATE RAZORPAY ORDER
+            // ==========================================
+
+            const response = await fetch("/api/payment/createorder", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    bookingId: Number(bookingId)
+                })
+            });
 
             if (!response.ok) {
                 throw new Error("Unable to create payment order");
@@ -114,7 +117,11 @@
 
             console.log("Payment Response:", data);
 
-            // Razorpay Checkout configuration
+
+            // ==========================================
+            // 2. RAZORPAY CHECKOUT
+            // ==========================================
+
             const options = {
 
                 key: data.keyId,
@@ -129,31 +136,125 @@
 
                 order_id: data.orderId,
 
-                handler: function (response) {
 
-                    console.log("Payment ID:",
-                        response.razorpay_payment_id);
+                // ==========================================
+                // 3. PAYMENT SUCCESS
+                // ==========================================
 
-                    console.log("Order ID:",
-                        response.razorpay_order_id);
+                handler: async function (response) {
 
-                    console.log("Signature:",
-                        response.razorpay_signature);
+                    console.log(
+                        "Payment ID:",
+                        response.razorpay_payment_id
+                    );
 
-                    alert("Payment successful!");
+                    console.log(
+                        "Order ID:",
+                        response.razorpay_order_id
+                    );
 
+                    console.log(
+                        "Signature:",
+                        response.razorpay_signature
+                    );
+
+
+                    // ==========================================
+                    // 4. VERIFY PAYMENT WITH BACKEND
+                    // ==========================================
+
+                    try {
+
+                        const verifyResponse =
+                            await fetch("/api/payment/verify", {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+
+                                body: JSON.stringify({
+
+                                    razorpayPaymentId:
+                                        response.razorpay_payment_id,
+
+                                    razorpayOrderId:
+                                        response.razorpay_order_id,
+
+                                    razorpaySignature:
+                                        response.razorpay_signature
+
+                                })
+                            });
+
+
+                        const result =
+                            await verifyResponse.text();
+
+
+                        if (verifyResponse.ok) {
+
+                            alert(
+                                "Payment successful! Booking confirmed."
+                            );
+
+                            console.log(
+                                "Verification:",
+                                result
+                            );
+
+                        } else {
+
+                            alert(
+                                "Payment verification failed!"
+                            );
+
+                            console.error(
+                                "Verification:",
+                                result
+                            );
+                        }
+
+                    } catch (error) {
+
+                        console.error(
+                            "Verification error:",
+                            error
+                        );
+
+                        alert(
+                            "Payment verification error: "
+                            + error.message
+                        );
+                    }
                 },
+
+
+                // ==========================================
+                // 5. PREFILL
+                // ==========================================
 
                 prefill: {
                     name: "Adarsh"
                 },
+
+
+                // ==========================================
+                // 6. THEME
+                // ==========================================
 
                 theme: {
                     color: "#3399cc"
                 }
             };
 
-            const razorpay = new Razorpay(options);
+
+            // ==========================================
+            // 7. OPEN RAZORPAY
+            // ==========================================
+
+            const razorpay =
+                new Razorpay(options);
 
             razorpay.open();
 
@@ -161,7 +262,10 @@
 
             console.error(error);
 
-            alert("Payment failed: " + error.message);
+            alert(
+                "Payment failed: "
+                + error.message
+            );
         }
     }
 
@@ -169,4 +273,3 @@
 
 </body>
 </html>
-```
