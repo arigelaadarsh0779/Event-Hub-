@@ -13,6 +13,7 @@ import com.project.Event_Hub.Event.Repository.EventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -62,7 +63,17 @@ public class BookingService {
         booking.setEvent(event);
         booking.setNumberOfSeats(dto.getNumberOfSeats());
         booking.setBookingDate(LocalDateTime.now());
-        booking.setStatus(BookingStatus.CONFIRMED);
+
+
+        // Calculate total amount
+        BigDecimal totalAmount =
+                event.getTicketPrice()
+                        .multiply(BigDecimal.valueOf(dto.getNumberOfSeats()));
+
+        booking.setTotalAmount(totalAmount);
+
+        // For payment flow
+        booking.setStatus(BookingStatus.PENDING);
 
 
         // Reduce available seats
@@ -80,7 +91,7 @@ public class BookingService {
 
         // Generate booking number
         booked.setBookingNumber(
-                "TS21G" + booked.getId()
+                "TS21G" + booked.getBookingid()
         );
 
         booked = bookingsRepository.save(booked);

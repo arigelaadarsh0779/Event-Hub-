@@ -35,6 +35,7 @@ public class EventMapper {
         dto.setDate(event.getDate());
         dto.setStartTime(event.getStartTime());
         dto.setEndTime(event.getEndTime());
+
         dto.setVenue(event.getVenue());
         dto.setThemeOfTheProject(event.getThemeOfTheProject());
         dto.setOrganizer(event.getOrganizer());

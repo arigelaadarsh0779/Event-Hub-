@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -17,7 +18,7 @@ public class Bookings {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private long bookingid;
 
     private int numberOfSeats;
 
@@ -27,6 +28,8 @@ public class Bookings {
     private BookingStatus status;
 
     private String bookingNumber;
+
+    private BigDecimal totalAmount;
 
     @ManyToOne
     private Event event;

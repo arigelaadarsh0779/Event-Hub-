@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.swing.plaf.basic.BasicIconFactory;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -34,6 +36,7 @@ public class Event {
 
     public String Organizer;
     private int TotalSeats ;
+    private BigDecimal TicketPrice;
 
 
     private int AvailableSeats;

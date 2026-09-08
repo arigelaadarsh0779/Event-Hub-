@@ -34,7 +34,7 @@ public class BookingController {
 
 
     // GET ALL BOOKINGS BY USER ID
-    @GetMapping("/user/{id}")
+    @GetMapping("/user/{bookingid}")
     public List<BookingResponseDto> getBookingsByUserId(
             @PathVariable long id) {
 
@@ -43,7 +43,7 @@ public class BookingController {
 
 
     // CANCEL BOOKING BY BOOKING ID
-    @PutMapping("/{id}/cancel")
+    @PutMapping("/{bookingid}/cancel")
     public BookingResponseDto cancelBookingById(
             @PathVariable long id) {
 
@@ -52,7 +52,7 @@ public class BookingController {
 
 
     // CHECK AVAILABLE SEATS BY EVENT ID
-    @GetMapping("/availability/{id}")
+    @GetMapping("/availability/{bookingid}")
     public int checkAvailabilityByEvent(
             @PathVariable long id) {
 

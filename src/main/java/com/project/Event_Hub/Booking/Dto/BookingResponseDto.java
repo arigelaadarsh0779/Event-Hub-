@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
@@ -23,6 +24,7 @@ public class BookingResponseDto {
     private String BookingNumber;
 
     private LocalDateTime bookingDate;
+    private BigDecimal totalAmount;
 
     private BookingStatus status;
 }

@@ -13,6 +13,8 @@ public class BookingMapper {
       BookingResponseDto dto = new BookingResponseDto();
       dto.setName(bookings.getUser().getName());
       dto.setBookingDate(bookings.getBookingDate());
+      dto.setTotalAmount(bookings.getTotalAmount());
+
       dto.setStatus(bookings.getStatus());
       dto.setEventId(bookings.getEvent().getId());
       dto.setBookingNumber(bookings.getBookingNumber());
