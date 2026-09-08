@@ -12,7 +12,7 @@ public class BookingRequestDto {
 
     private Long eventId;
 
-    private long id;
+    private long userId;
 
     private int numberOfSeats;
 

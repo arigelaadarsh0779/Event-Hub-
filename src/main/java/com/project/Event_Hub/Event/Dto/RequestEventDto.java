@@ -2,6 +2,7 @@ package com.project.Event_Hub.Event.Dto;
 
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 @Data
@@ -26,6 +27,8 @@ public class RequestEventDto {
         private String Organizer;
           private int RemainingSeats;
           private int TotalSeats;
+          private BigDecimal ticketPrice;
+
 
     }
 

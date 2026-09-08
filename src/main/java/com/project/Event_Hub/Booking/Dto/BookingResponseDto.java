@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Component
 public class BookingResponseDto {
 
-    private Long id;
+    private Long bookingid;
 
     private String name;
     private Long eventId;

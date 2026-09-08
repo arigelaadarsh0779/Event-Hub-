@@ -32,10 +32,10 @@ public class PaymentService {
     private String keySecret;
 
     public PaymentResponseDto createOrder(PaymentRequestDto dto) throws Exception{
-        Bookings bookings = bookingsRepository.findById(dto.getBookingId()).orElseThrow(()->new RuntimeException(" bookinf=gs not found"));
-
+        Bookings bookings = bookingsRepository.findById(dto.getBookingId())
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
         int paise = bookings.getTotalAmount().multiply(BigDecimal.valueOf(100)).intValueExact();
-
+        System.out.println("Razorpay Key ID = " + keyId);
 
         RazorpayClient razorpayClient= new RazorpayClient(keyId,keySecret);
 
@@ -57,7 +57,13 @@ public class PaymentService {
         payment.setCreatedAt(LocalDateTime.now());
         paymentRepository.save(payment);
 
-        return paymentMapper.convertObjToResponse(payment);
+        PaymentResponseDto response =
+                paymentMapper.convertObjToResponse(payment);
+
+        response.setKeyId(keyId);
+
+        return response;
+
     }
 
 

@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Event Hub - Payment</title>
+
+    <!-- Razorpay Checkout -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .payment-box {
+            background: white;
+            padding: 30px;
+            width: 350px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            background: #3399cc;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background: #287da8;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="payment-box">
+
+    <h1>Event Hub</h1>
+
+    <label for="bookingId">Booking ID</label>
+
+    <input
+            type="number"
+            id="bookingId"
+            placeholder="Enter Booking ID"
+    >
+
+    <button onclick="payNow()">
+        Pay Now
+    </button>
+
+</div>
+
+<script>
+
+    async function payNow() {
+
+        const bookingId = document.getElementById("bookingId").value;
+
+        if (!bookingId) {
+            alert("Please enter Booking ID");
+            return;
+        }
+
+        try {
+
+            // Create Razorpay order
+                 const response = await fetch("/api/payment/createorder", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                bookingId: Number(bookingId)
+            })
+        });
+
+            if (!response.ok) {
+                throw new Error("Unable to create payment order");
+            }
+
+            const data = await response.json();
+
+            console.log("Payment Response:", data);
+
+            // Razorpay Checkout configuration
+            const options = {
+
+                key: data.keyId,
+
+                amount: data.amount * 100,
+
+                currency: data.currency,
+
+                name: "Event Hub",
+
+                description: "Event Booking",
+
+                order_id: data.orderId,
+
+                handler: function (response) {
+
+                    console.log("Payment ID:",
+                        response.razorpay_payment_id);
+
+                    console.log("Order ID:",
+                        response.razorpay_order_id);
+
+                    console.log("Signature:",
+                        response.razorpay_signature);
+
+                    alert("Payment successful!");
+
+                },
+
+                prefill: {
+                    name: "Adarsh"
+                },
+
+                theme: {
+                    color: "#3399cc"
+                }
+            };
+
+            const razorpay = new Razorpay(options);
+
+            razorpay.open();
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert("Payment failed: " + error.message);
+        }
+    }
+
+</script>
+
+</body>
+</html>
+```

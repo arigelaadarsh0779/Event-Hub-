@@ -17,6 +17,7 @@ public class EventMapper {
         event.setDescription(dto.getDescription());
         event.setDate(dto.getDate());
         event.setStartTime(dto.getStartTime());
+        event.setTicketPrice(dto.getTicketPrice());
         event.setEndTime(dto.getEndTime());
         event.setVenue(dto.getVenue());
         event.setThemeOfTheProject(dto.getThemeOfTheProject());
@@ -30,12 +31,13 @@ public class EventMapper {
 
     public ResponseEventDto objToRespose(Event event){
         ResponseEventDto dto = new ResponseEventDto();
+
         dto.setTitle(event.getTitle());
         dto.setDescription(event.getDescription());
         dto.setDate(event.getDate());
         dto.setStartTime(event.getStartTime());
         dto.setEndTime(event.getEndTime());
-
+        dto.setTicketPrice(event.getTicketPrice());
         dto.setVenue(event.getVenue());
         dto.setThemeOfTheProject(event.getThemeOfTheProject());
         dto.setOrganizer(event.getOrganizer());

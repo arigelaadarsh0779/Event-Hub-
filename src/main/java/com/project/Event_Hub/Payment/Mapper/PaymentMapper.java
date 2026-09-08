@@ -12,6 +12,7 @@ public class PaymentMapper {
         PaymentResponseDto response = new PaymentResponseDto();
 
         response.setOrderId(payment.getRazorpayOrderId());
+
         response.setAmount(payment.getAmount());
         response.setCurrency("INR");
         response.setStatus(payment.getStatus());

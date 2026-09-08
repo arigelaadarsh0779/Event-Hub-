@@ -27,10 +27,11 @@ public class ResponseEventDto {
 
     private String ThemeOfTheProject;
 
-    public String Organizer;
+    private String Organizer;
 
+    private BigDecimal ticketPrice;
 
-    private int TotalSeats ;
+    private int TotalSeats;
     private int RemainingSeats;
 
 }

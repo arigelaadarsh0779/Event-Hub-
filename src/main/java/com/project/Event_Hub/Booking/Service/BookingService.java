@@ -31,7 +31,7 @@ public class BookingService {
     public BookingResponseDto createBooking(BookingRequestDto dto) {
 
         // Find User
-        User user = userRepository.findById(dto.getId())
+        User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() ->
                         new RuntimeException("User not found"));
 
@@ -91,7 +91,7 @@ public class BookingService {
 
         // Generate booking number
         booked.setBookingNumber(
-                "TS21G" + booked.getBookingid()
+                "TS21G" + booked.getBookingId()
         );
 
         booked = bookingsRepository.save(booked);

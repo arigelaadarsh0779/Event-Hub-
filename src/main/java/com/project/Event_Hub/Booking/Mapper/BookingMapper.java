@@ -14,9 +14,9 @@ public class BookingMapper {
       dto.setName(bookings.getUser().getName());
       dto.setBookingDate(bookings.getBookingDate());
       dto.setTotalAmount(bookings.getTotalAmount());
-
+      dto.setBookingid(bookings.getBookingId());
       dto.setStatus(bookings.getStatus());
-      dto.setEventId(bookings.getEvent().getId());
+      dto.setEventId(bookings.getEvent().getEventId());
       dto.setBookingNumber(bookings.getBookingNumber());
       dto.setNumberOfSeats(bookings.getNumberOfSeats());
      return dto;

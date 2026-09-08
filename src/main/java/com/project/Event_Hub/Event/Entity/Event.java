@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.swing.plaf.basic.BasicIconFactory;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -18,7 +17,7 @@ import java.time.LocalTime;
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long Id;
+    private long eventId;
     @Column(nullable = false,length = 200 )
     private String Title;
     @Column(length = 400 )
@@ -36,7 +35,7 @@ public class Event {
 
     public String Organizer;
     private int TotalSeats ;
-    private BigDecimal TicketPrice;
+    private BigDecimal ticketPrice;
 
 
     private int AvailableSeats;
