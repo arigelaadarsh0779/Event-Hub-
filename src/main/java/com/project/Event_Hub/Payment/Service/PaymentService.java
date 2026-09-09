@@ -1,7 +1,10 @@
 package com.project.Event_Hub.Payment.Service;
 
+import com.project.Event_Hub.Auth.Entity.User;
 import com.project.Event_Hub.Booking.Entity.Bookings;
 import com.project.Event_Hub.Booking.Repository.BookingsRepository;
+import com.project.Event_Hub.Event.Entity.Event;
+import com.project.Event_Hub.Notification.Service.EmailSender;
 import com.project.Event_Hub.Payment.Dto.PaymentRequestDto;
 import com.project.Event_Hub.Payment.Dto.PaymentResponseDto;
 import com.project.Event_Hub.Payment.Entity.PaymentsEnum;
@@ -24,8 +27,10 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class PaymentService {
     private final PaymentRepository paymentRepository;
+//    private final User user;
     private final BookingsRepository bookingsRepository;
     private final PaymentMapper paymentMapper;
+    private final EmailSender emailSender;
 
 
     @Value("${razorpay.key.id}")
@@ -109,6 +114,32 @@ public class PaymentService {
 
         // Confirm booking
         Bookings booking = payment.getBooking();
+        User user= booking.getUser();
+
+
+        Event event = booking.getEvent();
+
+        emailSender.sendEmail(user.getEmail(),
+                "Booking Confirmed",
+                "Hello " + user.getName() + ",\n\n" +
+                        "🎉 Your payment was successful and your booking is confirmed!\n\n" +
+
+                        "Booking Details\n" +
+                        "Booking Number: " + booking.getBookingNumber() + "\n" +
+                        "Event: " + event.getTitle() + "\n" +
+                        "Number of Seats: " + booking.getNumberOfSeats() + "\n" +
+                        "Booking Status: CONFIRMED\n\n" +
+
+                        "Payment Details\n" +
+                        "Payment ID: " + payment.getRazorpayPaymetId() + "\n" +
+                        "Amount Paid: ₹" + payment.getAmount() + "\n" +
+                        "Payment Status: SUCCESS\n\n" +
+
+                        "Thank you for booking with Event Hub!\n\n" +
+                        "Event Hub Team"
+
+        );
+
 
         booking.setStatus(BookingStatus.CONFIRMED);
 
