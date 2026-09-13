@@ -4,6 +4,8 @@ import com.project.Event_Hub.Event.Dto.RequestEventDto;
 import com.project.Event_Hub.Event.Dto.ResponseEventDto;
 import com.project.Event_Hub.Event.Entity.Event;
 import com.project.Event_Hub.Event.Service.EventService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,36 +20,52 @@ public class EventController {
     }
 
     @GetMapping
-    public List<ResponseEventDto> getAllEvents() {
-        return eventService.viewAllEvents();
+    public ResponseEntity<List<ResponseEventDto>> getAllEvents() {
+
+        return
+                ResponseEntity
+                        .status(200)
+                        .body(eventService.viewAllEvents());
     }
 
 
     @PostMapping("/add")
-    public String createEvent(@RequestBody RequestEventDto ev){
+    public ResponseEntity<String> createEvent( @Valid @RequestBody RequestEventDto ev){
         eventService.createEvent(ev);
-        return "Event created Susccesfully";
+        return  ResponseEntity.status(200).body("Event Added Successfully");
     }
     @PostMapping("/edit/{userid}")
-    public ResponseEventDto editEvent(@PathVariable long  id , @RequestBody RequestEventDto ev){
-        return eventService.manageEventById(id,ev);
+    public ResponseEntity<ResponseEventDto> editEvent(@PathVariable long  id , @RequestBody RequestEventDto ev){
+        return ResponseEntity
+                .status(200)
+                .body(eventService.manageEventById(id,ev));
     }
     @GetMapping("/{title}")
-    public List<ResponseEventDto> findByTitle(@PathVariable String title){
-        return eventService.findByTitle(title);
+    public ResponseEntity<ResponseEventDto> findByTitle(@PathVariable String title){
+        return
+                ResponseEntity
+                        .status(200)
+                        .body(eventService.findByTitle(title));
     }
     @GetMapping("/{theme}" )
-    public List<ResponseEventDto> findBytheme(@PathVariable String theme){
-        return eventService.findEventByTheme(theme);
+    public ResponseEntity<List<ResponseEventDto>> findBytheme(@PathVariable String theme){
+        return
+                ResponseEntity
+                        .status(200)
+                        .body(eventService.findEventByTheme(theme));
     }
     @GetMapping("/{venue}")
-    public List<ResponseEventDto> findByeventVenue(@PathVariable String venue){
-        return eventService.findByEventVenue(venue);
+    public ResponseEntity<List<ResponseEventDto>> findByeventVenue(@PathVariable String venue){
+        return ResponseEntity
+                .status(200)
+                .body(eventService.findByEventVenue(venue));
     }
     @DeleteMapping("/delete/{userid}")
-    public String deleteByid(@PathVariable long id){
+    public ResponseEntity<String> deleteByid(@PathVariable long id){
         eventService.deleteEventById(id);
-        return "Deleted Sucessfull";
+        return ResponseEntity
+                .status(200)
+                .body("Event Deleted Sucessfull");
     }
 
 }

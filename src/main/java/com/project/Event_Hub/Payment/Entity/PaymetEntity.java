@@ -19,7 +19,7 @@ public class PaymetEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentId;
-    @OneToOne
+    @ManyToOne
     private Bookings booking;
 
     private String razorpayOrderId;

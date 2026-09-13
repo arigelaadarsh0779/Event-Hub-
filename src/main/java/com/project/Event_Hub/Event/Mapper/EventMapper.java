@@ -31,7 +31,7 @@ public class EventMapper {
 
     public ResponseEventDto objToRespose(Event event){
         ResponseEventDto dto = new ResponseEventDto();
-
+        dto.setEventid(event.getEventId());
         dto.setTitle(event.getTitle());
         dto.setDescription(event.getDescription());
         dto.setDate(event.getDate());

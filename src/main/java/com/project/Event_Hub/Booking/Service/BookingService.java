@@ -10,9 +10,12 @@ import com.project.Event_Hub.Booking.Mapper.BookingMapper;
 import com.project.Event_Hub.Booking.Repository.BookingsRepository;
 import com.project.Event_Hub.Event.Entity.Event;
 import com.project.Event_Hub.Event.Repository.EventRepository;
+import com.project.Event_Hub.Exception.BookingsNotFoundException;
+import com.project.Event_Hub.Exception.EventNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Book;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -91,7 +94,7 @@ public class BookingService {
 
         // Generate booking number
         booked.setBookingNumber(
-                "TS21G" + booked.getBookingId()
+                "TS21G"+ booked.getBookingId()
         );
 
         booked = bookingsRepository.save(booked);
@@ -104,12 +107,16 @@ public class BookingService {
 
     // GET ALL BOOKINGS
     public List<BookingResponseDto> getAllbookings() {
-
-        return bookingsRepository.findAll()
-                .stream()
-                .map(bookingMapper::convertObjtoResponse)
-                .toList();
+        List<Bookings> boo = bookingsRepository.findAll();
+        if (boo != null) {
+            return boo
+                    .stream()
+                    .map(bookingMapper::convertObjtoResponse)
+                    .toList();
+        }
+        else throw new BookingsNotFoundException("No Bookings Found");
     }
+
 
 
     // GET ALL BOOKINGS BY USER ID
@@ -120,12 +127,15 @@ public class BookingService {
                 .orElseThrow(() ->
                         new RuntimeException("User not found"));
 
-
         // Find all bookings of that user
-        return bookingsRepository.findByUser(user)
-                .stream()
-                .map(bookingMapper::convertObjtoResponse)
-                .toList();
+        List<Bookings> boo = bookingsRepository.findByUser(user);
+        if (boo!=null) {
+            return boo
+                    .stream()
+                    .map(bookingMapper::convertObjtoResponse)
+                    .toList();
+        }
+        else throw new BookingsNotFoundException("No Bookings Found the Id");
     }
 
 
@@ -135,7 +145,7 @@ public class BookingService {
         // Find booking
         Bookings booking = bookingsRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Booking not found"));
+                        new BookingsNotFoundException("Booking not found"));
 
 
         // Check already cancelled
@@ -177,7 +187,7 @@ public class BookingService {
 
         Event event = eventRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Event not found"));
+                        new EventNotFoundException("Event not found"));
 
         return event.getAvailableSeats();
     }

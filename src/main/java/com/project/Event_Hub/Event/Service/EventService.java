@@ -6,8 +6,13 @@ import com.project.Event_Hub.Event.Entity.Event;
 import com.project.Event_Hub.Event.Mapper.EventMapper;
 import com.project.Event_Hub.Event.Repository.EventRepository;
 
+import com.project.Event_Hub.Exception.DateExpiredExeception;
+import com.project.Event_Hub.Exception.EventNotFoundException;
+import com.project.Event_Hub.Exception.NoEventFoundException;
+import com.project.Event_Hub.Exception.TitleNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -25,7 +30,12 @@ public class EventService implements EventsInterface{
         Event event  = new Event();
         event.setTitle(dto.getTitle());
         event.setDescription(dto.getDescription());
+        LocalDate today = LocalDate.now();
+        if(dto.getDate().isAfter(today))
         event.setDate(dto.getDate());
+        else throw new DateExpiredExeception("The Date Must be in Future..!!");
+
+
         event.setStartTime(dto.getStartTime());
         event.setEndTime(dto.getEndTime());
         event.setVenue(dto.getVenue());
@@ -40,8 +50,12 @@ public class EventService implements EventsInterface{
     }
 
     public List<ResponseEventDto> viewAllEvents(){
-    return eventRepository.findAll().stream()
-            .map(eventmapper::objToRespose).toList();
+        List<Event> event =eventRepository.findAll();
+        if(event!=null) {
+            return eventRepository.findAll().stream()
+                    .map(eventmapper::objToRespose).toList();
+        }
+        else throw new NoEventFoundException("No Events Are Available Right Now ");
     }
 
     public ResponseEventDto manageEventById( long id , RequestEventDto dto){
@@ -50,7 +64,6 @@ public class EventService implements EventsInterface{
         event.setDescription(dto.getDescription());
         event.setDate(dto.getDate());
         event.setTicketPrice(dto.getTicketPrice());
-
         event.setStartTime(dto.getStartTime());
         event.setEndTime(dto.getEndTime());
         event.setVenue(dto.getVenue());
@@ -65,29 +78,41 @@ public class EventService implements EventsInterface{
 
     }
 
-    public List<ResponseEventDto> findByTitle(String Title){
-        return eventRepository.findByTitle(Title)
-                .stream()
-                .map(eventmapper::objToRespose)
-                .toList();
+    public ResponseEventDto findByTitle(String Title){
+//
+         Event ev =eventRepository.findByTitle(Title);
+         if (ev!=null)
+         return eventmapper.objToRespose(ev);
+         else throw  new TitleNotFoundException("No Event Found With That Title");
+
     }
 
 
     public List<ResponseEventDto> findEventByTheme(String ThemeOfTheProject){
-        return eventRepository.findByThemeOfTheProject(ThemeOfTheProject)
-                .stream()
-                .map(eventmapper::objToRespose)
-                .toList();
+        List<Event> ev = eventRepository.findByThemeOfTheProject(ThemeOfTheProject);
+        if (ev!= null) {
+
+            return ev
+                    .stream()
+                    .map(eventmapper::objToRespose)
+                    .toList();
+        }
+        else throw new EventNotFoundException("No Events are found");
     }
 
 
     public List<ResponseEventDto> findByEventVenue(String Venue){
-        return eventRepository.findByVenue(Venue).stream()
+        List<Event> ev = eventRepository.findByVenue(Venue);
+        if(ev!=null){
+        return ev.stream()
                 .map(eventmapper::objToRespose).toList();
+         }
+        else throw new NoEventFoundException("No Events are found");
     }
 
     public String deleteEventById(Long id){
-       eventRepository.deleteById(id);
+        Event ev = eventRepository.findById(id).orElseThrow(()->new NoEventFoundException("No Events are found "));
+       eventRepository.delete(ev);
        return "Deleted Sucessfully";
     }
 

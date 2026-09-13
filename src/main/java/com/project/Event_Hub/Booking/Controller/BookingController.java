@@ -5,6 +5,7 @@ import com.project.Event_Hub.Booking.Dto.BookingResponseDto;
 import com.project.Event_Hub.Booking.Service.BookingService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,43 +20,59 @@ public class BookingController {
 
     // GET ALL BOOKINGS
     @GetMapping
-    public List<BookingResponseDto> getAll() {
-        return bookingService.getAllbookings();
+    public ResponseEntity<List<BookingResponseDto>>getAll()
+    {
+        return
+                ResponseEntity
+                        .status(200)
+                        .body(bookingService.getAllbookings());
     }
 
 
     // CREATE BOOKING
     @PostMapping("/createBooking")
-    public BookingResponseDto createBooking(
+    public ResponseEntity<BookingResponseDto> createBooking(
             @RequestBody BookingRequestDto dto) {
 
-        return bookingService.createBooking(dto);
+        return
+                ResponseEntity
+                        .status(200)
+                        .body(bookingService.createBooking(dto));
     }
 
 
     // GET ALL BOOKINGS BY USER ID
     @GetMapping("/user/{bookingId}")
-    public List<BookingResponseDto> getBookingsByUserId(
+    public ResponseEntity<List<BookingResponseDto>> getBookingsByUserId(
             @PathVariable long id) {
 
-        return bookingService.getBookingsByUserId(id);
+        return
+                ResponseEntity
+                        .status(200)
+                        .body(bookingService.getBookingsByUserId(id));
     }
 
 
     // CANCEL BOOKING BY BOOKING ID
-    @PutMapping("/{bookingId}/cancel")
-    public BookingResponseDto cancelBookingById(
+    @PutMapping("/cancel/{bookingId}")
+    public ResponseEntity<BookingResponseDto> cancelBookingById(
             @PathVariable long id) {
 
-        return bookingService.cancelBookingById(id);
+        return
+                ResponseEntity
+                        .status(200)
+                        .body(bookingService.cancelBookingById(id));
     }
 
 
     // CHECK AVAILABLE SEATS BY EVENT ID
     @GetMapping("/availability/{bookingId}")
-    public int checkAvailabilityByEvent(
+    public ResponseEntity<Integer> checkAvailabilityByEvent(
             @PathVariable long id) {
 
-        return bookingService.checkAvailabilityByEvent(id);
+        return
+                ResponseEntity
+                        .status(200)
+                        .body(bookingService.checkAvailabilityByEvent(id));
     }
 }

@@ -13,6 +13,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResponseEventDto {
+    private long eventid;
     private String Title;
 
     private String Description;

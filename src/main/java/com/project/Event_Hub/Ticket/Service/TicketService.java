@@ -2,7 +2,7 @@ package com.project.Event_Hub.Ticket.Service;
 
 import com.project.Event_Hub.Booking.Entity.Bookings;
 import com.project.Event_Hub.Booking.Repository.BookingsRepository;
-import com.project.Event_Hub.Notification.Service.EmailSender;
+import com.project.Event_Hub.Notification.EmailSender;
 import com.project.Event_Hub.Ticket.DTO.TicketRequestDto;
 import com.project.Event_Hub.Ticket.DTO.TicketResponseDto;
 import com.project.Event_Hub.Ticket.Entity.TicketEntity;
@@ -74,6 +74,7 @@ public class TicketService implements TicketInterface {
 
         String venue = booking.getEvent().getVenue();
 
+
         // 7. Get booking details
         int seats = booking.getNumberOfSeats();
         String bookingId = String.valueOf(booking.getBookingId());
@@ -109,12 +110,18 @@ public class TicketService implements TicketInterface {
             emailSender.sendTicketEmail(
                     email,
                     "Your Event Hub Ticket",
-                    "Your ticket has been successfully generated. Please find your ticket attached.",
+                    "Your ticket has been generated successfully. Please find your ticket attached.",
                     pdf
             );
 
+            System.out.println("Ticket email sent successfully");
+
         } catch (Exception e) {
-            throw new RuntimeException("Ticket email sending failed", e);
+
+            System.out.println(
+                    "Ticket generated successfully, but email sending failed: "
+                            + e.getMessage()
+            );
         }
 
         // 11. Return response

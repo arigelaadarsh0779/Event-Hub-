@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event,Long> {
 
-    List<Event> findByTitle(String Title);
+    Event findByTitle(String Title);
     List<Event> findByThemeOfTheProject(String ThemeOfTheProject);
     List<Event> findByVenue(String Venue);
 

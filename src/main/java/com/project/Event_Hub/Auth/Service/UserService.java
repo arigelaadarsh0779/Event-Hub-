@@ -2,7 +2,7 @@ package com.project.Event_Hub.Auth.Service;
 
 import com.project.Event_Hub.Auth.Entity.User;
 import com.project.Event_Hub.Auth.Repository.UserRepository;
-import com.project.Event_Hub.Notification.Service.EmailSender;
+import com.project.Event_Hub.Notification.EmailSender;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

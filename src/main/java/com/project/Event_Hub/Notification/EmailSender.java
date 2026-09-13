@@ -1,4 +1,4 @@
-package com.project.Event_Hub.Notification.Service;
+package com.project.Event_Hub.Notification;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
