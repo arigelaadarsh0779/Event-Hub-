@@ -1,8 +1,6 @@
 package com.project.Event_Hub.Event.Repository;
 
 
-import com.project.Event_Hub.Auth.Entity.User;
-import com.project.Event_Hub.Booking.Entity.Bookings;
 import com.project.Event_Hub.Event.Entity.Event;
 import org.springframework.data.jpa.repository.JpaRepository;
 

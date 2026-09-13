@@ -61,7 +61,7 @@ public class TicketService implements TicketInterface {
         }
 
         // 5. Get user details
-        String userName = booking.getUser().getName();
+        String userName = booking.getUser().getUsername();
         String email = booking.getUser().getEmail();
 
         // 6. Get event details

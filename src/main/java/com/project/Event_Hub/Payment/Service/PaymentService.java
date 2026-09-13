@@ -198,7 +198,7 @@ public class PaymentService {
             emailSender.sendEmail(
                     user.getEmail(),
                     "Booking Confirmed",
-                    "Hello " + user.getName() + ",\n\n" +
+                    "Hello " + user.getUsername() + ",\n\n" +
                             "🎉 Your payment was successful and your booking is confirmed!\n\n" +
 
                             "Booking Details\n" +

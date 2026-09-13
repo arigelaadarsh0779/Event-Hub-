@@ -3,8 +3,6 @@ package com.project.Event_Hub.Booking.Entity;
 import com.project.Event_Hub.Auth.Entity.User;
 import com.project.Event_Hub.Event.Entity.Event;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

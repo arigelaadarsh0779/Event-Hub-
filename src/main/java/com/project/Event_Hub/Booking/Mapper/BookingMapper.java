@@ -11,7 +11,7 @@ public class BookingMapper {
 
   public BookingResponseDto convertObjtoResponse(Bookings bookings){
       BookingResponseDto dto = new BookingResponseDto();
-      dto.setName(bookings.getUser().getName());
+      dto.setName(bookings.getUser().getUsername());
       dto.setBookingDate(bookings.getBookingDate());
       dto.setTotalAmount(bookings.getTotalAmount());
       dto.setBookingid(bookings.getBookingId());

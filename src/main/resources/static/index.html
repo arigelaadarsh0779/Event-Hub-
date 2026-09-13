@@ -99,7 +99,7 @@
             // 1. CREATE RAZORPAY ORDER
             // ==========================================
 
-            const response = await fetch("/api/payment/createorder", {
+            const response = await fetch("http://localhost:8080/api/createorder", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -166,7 +166,7 @@
                     try {
 
                         const verifyResponse =
-                            await fetch("/api/payment/verify", {
+                            await fetch("http://localhost:8080/api/verify", {
                                 method: "POST",
 
                                 headers: {

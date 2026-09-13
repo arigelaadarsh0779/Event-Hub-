@@ -6,12 +6,12 @@ import com.project.Event_Hub.Booking.Service.BookingService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/bookings")
 @RequiredArgsConstructor
 public class BookingController {
 
@@ -19,7 +19,7 @@ public class BookingController {
 
 
     // GET ALL BOOKINGS
-    @GetMapping
+    @GetMapping("/api/admin/allbookings")
     public ResponseEntity<List<BookingResponseDto>>getAll()
     {
         return
@@ -30,7 +30,7 @@ public class BookingController {
 
 
     // CREATE BOOKING
-    @PostMapping("/createBooking")
+    @PostMapping("/api/createBooking")
     public ResponseEntity<BookingResponseDto> createBooking(
             @RequestBody BookingRequestDto dto) {
 
@@ -42,7 +42,7 @@ public class BookingController {
 
 
     // GET ALL BOOKINGS BY USER ID
-    @GetMapping("/user/{bookingId}")
+    @GetMapping("/api/user/{bookingId}")
     public ResponseEntity<List<BookingResponseDto>> getBookingsByUserId(
             @PathVariable long id) {
 
@@ -54,7 +54,7 @@ public class BookingController {
 
 
     // CANCEL BOOKING BY BOOKING ID
-    @PutMapping("/cancel/{bookingId}")
+    @PutMapping("/api/cancel/{bookingId}")
     public ResponseEntity<BookingResponseDto> cancelBookingById(
             @PathVariable long id) {
 
@@ -66,7 +66,7 @@ public class BookingController {
 
 
     // CHECK AVAILABLE SEATS BY EVENT ID
-    @GetMapping("/availability/{bookingId}")
+    @GetMapping("/api/availability/{bookingId}")
     public ResponseEntity<Integer> checkAvailabilityByEvent(
             @PathVariable long id) {
 

@@ -1,23 +1,26 @@
 package com.project.Event_Hub.Auth.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "users")
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long userid;
 
+    private String Username;
 
-    private String Name;
-
+    @Column(unique = true, nullable = false)
     private String Email;
 
     private String Password;
+
+    private String Phone;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }
