@@ -39,10 +39,15 @@ public class SecurityConfig {
 
 
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/**").hasRole("USER")
-
-                        .anyRequest()
-                        .authenticated()
+                        .requestMatchers(
+                                "/api/user/getallaevents",
+                                "/api/user/title/**",
+                                "/api/user/theme/**",
+                                "/api/user/venue/**",
+                                "/api/user/availability/**"
+                        ).hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/user/**").hasRole("USER")
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(
                         jwtFilter,

@@ -107,6 +107,9 @@ public class AuthService {
 
         return AuthResponseDto.builder()
                 .token(token)
+                .userId(user.getUserid())
+                .username(user.getUsername())
+                .role(user.getRole() != null ? user.getRole().name() : "USER")
                 .build();
     }
 }
