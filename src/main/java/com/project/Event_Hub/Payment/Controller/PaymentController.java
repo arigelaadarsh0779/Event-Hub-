@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PaymentController {
     private final PaymentService paymentService;
 
-    @PostMapping("/api/createorder")
+    @PostMapping("/api/user/payment/createorder")
     public ResponseEntity<PaymentResponseDto> createorder(@RequestBody PaymentRequestDto  dto) throws Exception {
         return
                 ResponseEntity
@@ -25,7 +25,7 @@ public class PaymentController {
                         .body(paymentService.createOrder(dto));
     }
 
-    @PostMapping("/api/verify")
+    @PostMapping("/api/user/payment/verify")
     public ResponseEntity<String> verifyPayment(
             @RequestBody PaymentVerifyRequestDto dto) throws Exception {
 

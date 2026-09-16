@@ -15,7 +15,7 @@ public class AuthController {
   private final AuthService service;
 
   @PostMapping("/register")
-    public ResponseEntity<String > register (RegisterRequestDto dto){
+    public ResponseEntity<String > register (@RequestBody RegisterRequestDto dto){
       service.register(dto);
       return ResponseEntity
               .status(200)
@@ -23,7 +23,7 @@ public class AuthController {
   }
 
   @PostMapping("/login")
-    public ResponseEntity<AuthResponseDto> login (LoginRequestDto dto){
+    public ResponseEntity<AuthResponseDto> login (@RequestBody LoginRequestDto dto){
       return ResponseEntity
               .status(200)
               .body(service.login(dto));

@@ -6,28 +6,26 @@
 
     <title>Event Hub - Payment</title>
 
-    <!-- Razorpay Checkout -->
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: #f4f6f8;
+            background: #f5f5f5;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            margin: 0;
         }
 
-        .payment-box {
+        .payment-container {
             background: white;
             padding: 30px;
-            width: 350px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            width: 400px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
         }
 
-        h1 {
+        h2 {
             text-align: center;
             margin-bottom: 25px;
         }
@@ -35,37 +33,49 @@
         label {
             display: block;
             margin-bottom: 8px;
+            font-weight: bold;
         }
 
         input {
             width: 100%;
-            padding: 10px;
             box-sizing: border-box;
+            padding: 12px;
             margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
         }
 
         button {
             width: 100%;
-            padding: 12px;
+            padding: 13px;
             border: none;
+            border-radius: 6px;
             background: #3399cc;
             color: white;
             font-size: 16px;
             cursor: pointer;
-            border-radius: 5px;
         }
 
         button:hover {
-            background: #287da8;
+            background: #287da5;
+        }
+
+        #message {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
         }
     </style>
+
+    <!-- Razorpay Checkout -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 
 <body>
 
-<div class="payment-box">
+<div class="payment-container">
 
-    <h1>Event Hub</h1>
+    <h2>Event Hub Payment</h2>
 
     <label for="bookingId">Booking ID</label>
 
@@ -73,188 +83,159 @@
             type="number"
             id="bookingId"
             placeholder="Enter Booking ID"
+            required
     >
 
     <button onclick="payNow()">
         Pay Now
     </button>
 
+    <div id="message"></div>
+
 </div>
+
 
 <script>
 
     async function payNow() {
 
-        const bookingId =
-            document.getElementById("bookingId").value;
+        const bookingId = document.getElementById("bookingId").value;
+        const message = document.getElementById("message");
 
         if (!bookingId) {
-            alert("Please enter Booking ID");
+            message.innerText = "Please enter Booking ID";
+            return;
+        }
+
+        /*
+         * Get JWT token from browser storage.
+         */
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            message.innerText = "Please login first.";
+            console.error("JWT token not found in localStorage.");
             return;
         }
 
         try {
 
-            // ==========================================
-            // 1. CREATE RAZORPAY ORDER
-            // ==========================================
+            message.innerText = "Creating payment order...";
 
-            const response = await fetch("http://localhost:8080/api/createorder", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    bookingId: Number(bookingId)
-                })
-            });
+            /*
+             * Call Spring Boot backend.
+             *
+             * IMPORTANT:
+             * JWT is sent here.
+             */
+            const response = await fetch(
+                "/api/user/payment/createorder",
+                {
+                    method: "POST",
 
-            if (!response.ok) {
-                throw new Error("Unable to create payment order");
+                    headers: {
+                        "Content-Type": "application/json",
+
+                        "Authorization": "Bearer " + token
+                    },
+
+                    body: JSON.stringify({
+                        bookingId: Number(bookingId)
+                    })
+                }
+            );
+
+            /*
+             * If Spring Security returns 401 / 403
+             */
+            if (response.status === 401) {
+                throw new Error(
+                    "Unauthorized. Your login token is invalid or expired."
+                );
             }
 
-            const data = await response.json();
+            if (response.status === 403) {
+                throw new Error(
+                    "403 Forbidden. Spring Security rejected this request."
+                );
+            }
 
-            console.log("Payment Response:", data);
+            if (!response.ok) {
 
+                const errorText = await response.text();
 
-            // ==========================================
-            // 2. RAZORPAY CHECKOUT
-            // ==========================================
+                console.error("Backend error:", errorText);
 
+                throw new Error(
+                    "Unable to create payment order"
+                );
+            }
+
+            /*
+             * Read Razorpay order response.
+             */
+            const paymentData = await response.json();
+
+            console.log("Payment Order Response:", paymentData);
+
+            /*
+             * Open Razorpay Checkout.
+             *
+             * Adjust these property names only if your
+             * PaymentResponseDto uses different names.
+             */
             const options = {
 
-                key: data.keyId,
+                key: paymentData.key,
 
-                amount: data.amount * 100,
+                amount: paymentData.amount,
 
-                currency: data.currency,
+                currency: paymentData.currency || "INR",
 
                 name: "Event Hub",
 
-                description: "Event Booking",
+                description: "Event Ticket Booking",
 
-                order_id: data.orderId,
-
-
-                // ==========================================
-                // 3. PAYMENT SUCCESS
-                // ==========================================
+                order_id: paymentData.orderId,
 
                 handler: async function (response) {
 
                     console.log(
-                        "Payment ID:",
-                        response.razorpay_payment_id
+                        "Razorpay Payment Response:",
+                        response
                     );
 
-                    console.log(
-                        "Order ID:",
-                        response.razorpay_order_id
-                    );
+                    message.innerText =
+                        "Payment successful. Verifying payment...";
 
-                    console.log(
-                        "Signature:",
-                        response.razorpay_signature
-                    );
+                    await verifyPayment(response);
+                },
 
-
-                    // ==========================================
-                    // 4. VERIFY PAYMENT WITH BACKEND
-                    // ==========================================
-
-                    try {
-
-                        const verifyResponse =
-                            await fetch("http://localhost:8080/api/verify", {
-                                method: "POST",
-
-                                headers: {
-                                    "Content-Type": "application/json"
-                                },
-
-                                body: JSON.stringify({
-
-                                    razorpayPaymentId:
-                                        response.razorpay_payment_id,
-
-                                    razorpayOrderId:
-                                        response.razorpay_order_id,
-
-                                    razorpaySignature:
-                                        response.razorpay_signature
-
-                                })
-                            });
-
-
-                        const result =
-                            await verifyResponse.text();
-
-
-                        if (verifyResponse.ok) {
-
-                            alert(
-                                "Payment successful! Booking confirmed."
-                            );
-
-                            console.log(
-                                "Verification:",
-                                result
-                            );
-
-                        } else {
-
-                            alert(
-                                "Payment verification failed!"
-                            );
-
-                            console.error(
-                                "Verification:",
-                                result
-                            );
-                        }
-
-                    } catch (error) {
-
-                        console.error(
-                            "Verification error:",
-                            error
-                        );
-
-                        alert(
-                            "Payment verification error: "
-                            + error.message
-                        );
+                modal: {
+                    ondismiss: function () {
+                        message.innerText =
+                            "Payment cancelled.";
                     }
                 },
-
-
-                // ==========================================
-                // 5. PREFILL
-                // ==========================================
-
-                prefill: {
-                    name: "Adarsh"
-                },
-
-
-                // ==========================================
-                // 6. THEME
-                // ==========================================
 
                 theme: {
                     color: "#3399cc"
                 }
             };
 
+            const razorpay = new Razorpay(options);
 
-            // ==========================================
-            // 7. OPEN RAZORPAY
-            // ==========================================
+            razorpay.on("payment.failed", function (response) {
 
-            const razorpay =
-                new Razorpay(options);
+                console.error(
+                    "Razorpay payment failed:",
+                    response.error
+                );
+
+                message.innerText =
+                    "Payment failed: " +
+                    response.error.description;
+            });
 
             razorpay.open();
 
@@ -262,10 +243,87 @@
 
             console.error(error);
 
-            alert(
-                "Payment failed: "
-                + error.message
+            message.innerText = error.message;
+        }
+    }
+
+
+    /*
+     * Verify Razorpay payment with Spring Boot.
+     */
+    async function verifyPayment(paymentResponse) {
+
+        const token = localStorage.getItem("token");
+
+        try {
+
+            const response = await fetch(
+                "/api/user/payment/verifypayment",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json",
+
+                        "Authorization": "Bearer " + token
+                    },
+
+                    body: JSON.stringify({
+
+                        razorpayOrderId:
+                            paymentResponse.razorpay_order_id,
+
+                        razorpayPaymentId:
+                            paymentResponse.razorpay_payment_id,
+
+                        razorpaySignature:
+                            paymentResponse.razorpay_signature
+                    })
+                }
             );
+
+            if (response.status === 401) {
+                throw new Error(
+                    "Unauthorized while verifying payment."
+                );
+            }
+
+            if (response.status === 403) {
+                throw new Error(
+                    "403 Forbidden while verifying payment."
+                );
+            }
+
+            if (!response.ok) {
+
+                const errorText = await response.text();
+
+                console.error(
+                    "Payment verification error:",
+                    errorText
+                );
+
+                throw new Error(
+                    "Payment verification failed."
+                );
+            }
+
+            const result = await response.json();
+
+            console.log(
+                "Payment verification response:",
+                result
+            );
+
+            document.getElementById("message").innerText =
+                "Payment successful! Ticket will be generated.";
+
+        } catch (error) {
+
+            console.error(error);
+
+            document.getElementById("message").innerText =
+                error.message;
         }
     }
 

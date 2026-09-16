@@ -30,7 +30,7 @@ public class BookingController {
 
 
     // CREATE BOOKING
-    @PostMapping("/api/createBooking")
+    @PostMapping("/api/user/createbooking")
     public ResponseEntity<BookingResponseDto> createBooking(
             @RequestBody BookingRequestDto dto) {
 
@@ -44,35 +44,35 @@ public class BookingController {
     // GET ALL BOOKINGS BY USER ID
     @GetMapping("/api/user/{bookingId}")
     public ResponseEntity<List<BookingResponseDto>> getBookingsByUserId(
-            @PathVariable long id) {
+            @PathVariable long bookingId) {
 
         return
                 ResponseEntity
                         .status(200)
-                        .body(bookingService.getBookingsByUserId(id));
+                        .body(bookingService.getBookingsByUserId(bookingId));
     }
 
 
     // CANCEL BOOKING BY BOOKING ID
-    @PutMapping("/api/cancel/{bookingId}")
+    @PutMapping("/api/user/cancel/{bookingId}")
     public ResponseEntity<BookingResponseDto> cancelBookingById(
-            @PathVariable long id) {
+            @PathVariable long bookingId) {
 
         return
                 ResponseEntity
                         .status(200)
-                        .body(bookingService.cancelBookingById(id));
+                        .body(bookingService.cancelBookingById(bookingId));
     }
 
 
     // CHECK AVAILABLE SEATS BY EVENT ID
-    @GetMapping("/api/availability/{bookingId}")
+    @GetMapping("/api/user/availability/{bookingId}")
     public ResponseEntity<Integer> checkAvailabilityByEvent(
-            @PathVariable long id) {
+            @PathVariable long bookingId) {
 
         return
                 ResponseEntity
                         .status(200)
-                        .body(bookingService.checkAvailabilityByEvent(id));
+                        .body(bookingService.checkAvailabilityByEvent(bookingId));
     }
 }

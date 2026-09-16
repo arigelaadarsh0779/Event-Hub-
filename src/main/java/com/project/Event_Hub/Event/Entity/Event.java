@@ -25,7 +25,7 @@ public class Event {
 
     @Column(nullable = false,length = 200 )
     @NotBlank(message = " The Title name is Mandatory")
-    private String Title;
+    private String title;
 
     @Column(length = 500 )
     private String Description;
@@ -37,9 +37,9 @@ public class Event {
     private LocalTime EndTime;
     @NotBlank(message = "Venue is Mandatory For your event..!")
     @Column(nullable = false,length = 200 )
-    private String Venue;
+    private String venue;
 
-    private String ThemeOfTheProject;
+    private String themeOfTheProject;
 
     public String Organizer;
     @Min(10)
