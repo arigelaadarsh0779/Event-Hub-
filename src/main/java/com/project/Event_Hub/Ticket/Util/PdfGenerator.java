@@ -46,7 +46,7 @@ public class PdfGenerator {
 
         PDDocument document = new PDDocument();
 
-        // Horizontal A4 page
+
         PDPage page = new PDPage(new PDRectangle(PDRectangle.A4.getHeight(), PDRectangle.A4.getWidth()));
         document.addPage(page);
 
