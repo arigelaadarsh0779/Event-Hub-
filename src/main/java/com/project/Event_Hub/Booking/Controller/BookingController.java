@@ -65,6 +65,17 @@ public class BookingController {
     }
 
 
+    // CONFIRM BOOKING BY BOOKING ID (TRIGGERS BOOKING SUCCESS EMAIL)
+    @PutMapping("/api/user/confirm/{bookingId}")
+    public ResponseEntity<BookingResponseDto> confirmBookingById(
+            @PathVariable long bookingId) {
+
+        return ResponseEntity
+                .status(200)
+                .body(bookingService.confirmBookingById(bookingId));
+    }
+
+
     // CHECK AVAILABLE SEATS BY EVENT ID
     @GetMapping("/api/user/availability/{bookingId}")
     public ResponseEntity<Integer> checkAvailabilityByEvent(

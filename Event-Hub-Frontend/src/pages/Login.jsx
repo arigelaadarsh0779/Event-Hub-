@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { getErrorMessage } from "../services/api";
 import toast from "react-hot-toast";
 
 const Login = () => {
@@ -30,8 +31,8 @@ const Login = () => {
       toast.success("Welcome back! 🎉");
       navigate(from, { replace: true });
     } catch (err) {
-      const msg = err.response?.data?.message || err.response?.data || "Invalid username or password";
-      toast.error(String(msg));
+      const msg = getErrorMessage(err, "Invalid username or password");
+      toast.error(msg);
     } finally {
       setLoading(false);
     }

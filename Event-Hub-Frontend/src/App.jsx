@@ -14,6 +14,7 @@ import Payment from "./pages/Payment";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import MyBookings from "./pages/MyBookings";
 import MyTickets from "./pages/MyTickets";
+import Profile from "./pages/Profile";
 
 // Admin Pages
 import ManageEvents from "./pages/admin/ManageEvents";
@@ -52,14 +53,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-
-            {/* Shared routes - accessible to both logged-in User and Admin */}
-            <Route path="/events" element={
-              <ProtectedRoute><Events /></ProtectedRoute>
-            } />
-            <Route path="/events/:eventId" element={
-              <ProtectedRoute><EventDetails /></ProtectedRoute>
-            } />
+            <Route path="/events" element={<Events />} />
+            <Route path="/events/:eventId" element={<EventDetails />} />
 
             {/* User-only booking & ticket routes */}
             <Route path="/payment/:bookingId" element={
@@ -73,6 +68,9 @@ function App() {
             } />
             <Route path="/my-tickets" element={
               <ProtectedRoute><MyTickets /></ProtectedRoute>
+            } />
+            <Route path="/profile" element={
+              <ProtectedRoute><Profile /></ProtectedRoute>
             } />
 
             {/* Admin-only routes */}

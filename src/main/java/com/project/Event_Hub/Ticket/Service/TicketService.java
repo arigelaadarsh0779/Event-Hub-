@@ -78,6 +78,7 @@ public class TicketService implements TicketInterface {
         // 7. Get booking details
         int seats = booking.getNumberOfSeats();
         String bookingId = String.valueOf(booking.getBookingId());
+        String theme = booking.getEvent().getThemeOfTheProject();
 
         // 8. Generate PDF ticket
         byte[] pdf;
@@ -90,6 +91,7 @@ public class TicketService implements TicketInterface {
                     userName,
                     email,
                     eventName,
+                    theme,
                     date,
                     time,
                     venue,

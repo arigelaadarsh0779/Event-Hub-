@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.project.Event_Hub.Auth.Dto.UserProfileDto;
+
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -29,5 +31,15 @@ public class AuthController {
               .body(service.login(dto));
   }
 
+  @GetMapping("/profile/{userId}")
+  public ResponseEntity<UserProfileDto> getProfile(@PathVariable Long userId) {
+      return ResponseEntity.ok(service.getUserProfile(userId));
+  }
 
+  @PutMapping("/profile/{userId}")
+  public ResponseEntity<UserProfileDto> updateProfile(
+          @PathVariable Long userId,
+          @RequestBody UserProfileDto dto) {
+      return ResponseEntity.ok(service.updateUserProfile(userId, dto));
+  }
 }

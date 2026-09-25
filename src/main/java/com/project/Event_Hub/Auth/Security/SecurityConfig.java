@@ -38,14 +38,16 @@ public class SecurityConfig {
                         .requestMatchers("/index.html").permitAll()
 
 
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers(
                                 "/api/user/getallaevents",
                                 "/api/user/title/**",
                                 "/api/user/theme/**",
                                 "/api/user/venue/**",
-                                "/api/user/availability/**"
-                        ).hasAnyRole("USER", "ADMIN")
+                                "/api/user/availability/**",
+                                "/api/events/**",
+                                "/api/tickets/**"
+                        ).permitAll()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/user/**").hasRole("USER")
                         .anyRequest().authenticated()
                 )

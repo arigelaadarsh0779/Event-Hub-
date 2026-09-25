@@ -112,4 +112,55 @@ public class AuthService {
                 .role(user.getRole() != null ? user.getRole().name() : "USER")
                 .build();
     }
+
+    public com.project.Event_Hub.Auth.Dto.UserProfileDto getUserProfile(Long userId) {
+        User user = repository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+
+        return com.project.Event_Hub.Auth.Dto.UserProfileDto.builder()
+                .userId(user.getUserid())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .role(user.getRole() != null ? user.getRole().name() : "USER")
+                .build();
+    }
+
+    public com.project.Event_Hub.Auth.Dto.UserProfileDto updateUserProfile(Long userId, com.project.Event_Hub.Auth.Dto.UserProfileDto request) {
+        User user = repository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+
+        if (request.getUsername() != null && !request.getUsername().trim().isEmpty()
+                && !request.getUsername().equalsIgnoreCase(user.getUsername())) {
+            if (repository.existsByUsername(request.getUsername())) {
+                throw new UserAlreadyExistException("Username is already taken by another account");
+            }
+            user.setUsername(request.getUsername().trim());
+        }
+
+        if (request.getEmail() != null && !request.getEmail().trim().isEmpty()) {
+            user.setEmail(request.getEmail().trim());
+        }
+
+        if (request.getPhone() != null && !request.getPhone().trim().isEmpty()) {
+            user.setPhone(request.getPhone().trim());
+        }
+
+        if (request.getPassword() != null && !request.getPassword().trim().isEmpty()) {
+            if (request.getPassword().length() < 6) {
+                throw new PasswordNotNullException("Password must be at least 6 characters long");
+            }
+            user.setPassword(passwordEncoder.encode(request.getPassword().trim()));
+        }
+
+        User updatedUser = repository.save(user);
+
+        return com.project.Event_Hub.Auth.Dto.UserProfileDto.builder()
+                .userId(updatedUser.getUserid())
+                .username(updatedUser.getUsername())
+                .email(updatedUser.getEmail())
+                .phone(updatedUser.getPhone())
+                .role(updatedUser.getRole() != null ? updatedUser.getRole().name() : "USER")
+                .build();
+    }
 }

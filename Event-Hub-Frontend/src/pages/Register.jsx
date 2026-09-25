@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { getErrorMessage } from "../services/api";
 import toast from "react-hot-toast";
 
 const Register = () => {
@@ -43,8 +44,8 @@ const Register = () => {
       toast.success("Account created successfully! Please sign in. 🎉");
       navigate("/login");
     } catch (err) {
-      const msg = err.response?.data?.message || err.response?.data || "Registration failed. Please try again.";
-      toast.error(String(msg));
+      const msg = getErrorMessage(err, "Registration failed. Please try again.");
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -114,23 +115,36 @@ const Register = () => {
             </div>
           </div>
 
-          {/* Account Role Selector */}
+          {/* Account Role Selector Buttons */}
           <div className="form-group">
-            <label className="form-label">Account Role</label>
-            <div className="role-selector-pills">
+            <label className="form-label">Select Account Role</label>
+            <div className="role-selector-buttons">
               <button
                 type="button"
-                className={`role-pill ${form.role === "USER" ? "role-pill-active" : ""}`}
+                id="role-btn-user"
+                className={`role-select-btn ${form.role === "USER" ? "role-select-btn-active" : ""}`}
                 onClick={() => setForm((prev) => ({ ...prev, role: "USER" }))}
               >
-                👤 Regular User (Book Events)
+                <div className="role-btn-icon">👤</div>
+                <div className="role-btn-text">
+                  <div className="role-btn-title">Attendee / User</div>
+                  <div className="role-btn-desc">Browse & book event tickets</div>
+                </div>
+                {form.role === "USER" && <span className="role-check">✓</span>}
               </button>
+
               <button
                 type="button"
-                className={`role-pill ${form.role === "ADMIN" ? "role-pill-active" : ""}`}
+                id="role-btn-admin"
+                className={`role-select-btn ${form.role === "ADMIN" ? "role-select-btn-active" : ""}`}
                 onClick={() => setForm((prev) => ({ ...prev, role: "ADMIN" }))}
               >
-                🛡️ Administrator (Manage Events)
+                <div className="role-btn-icon">🛡️</div>
+                <div className="role-btn-text">
+                  <div className="role-btn-title">Administrator</div>
+                  <div className="role-btn-desc">Create & manage live events</div>
+                </div>
+                {form.role === "ADMIN" && <span className="role-check">✓</span>}
               </button>
             </div>
           </div>

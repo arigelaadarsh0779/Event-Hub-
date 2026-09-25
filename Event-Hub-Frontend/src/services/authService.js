@@ -1,4 +1,4 @@
-﻿import api from "./api";
+import api from "./api";
 
 // POST /api/auth/register
 // Role is required by backend - we always send "USER" for regular users
@@ -19,4 +19,14 @@ export const login = (data) => {
     username: data.username,
     password: data.password,
   });
+};
+
+// GET /api/auth/profile/{userId}
+export const getUserProfile = (userId) => {
+  return api.get(`/api/auth/profile/${userId}`);
+};
+
+// PUT /api/auth/profile/{userId}
+export const updateUserProfile = (userId, data) => {
+  return api.put(`/api/auth/profile/${userId}`, data);
 };

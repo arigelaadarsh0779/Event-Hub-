@@ -70,9 +70,12 @@ const Navbar = () => {
           <div className="nav-auth">
             {isAuthenticated ? (
               <>
-                <span className={`nav-username ${isAdmin ? "admin-badge-pill" : ""}`}>
+                <Link to="/profile" className={isActive("/profile")} onClick={() => setMenuOpen(false)}>
+                  My Profile
+                </Link>
+                <Link to="/profile" className={`nav-username ${isAdmin ? "admin-badge-pill" : ""}`} onClick={() => setMenuOpen(false)}>
                   {isAdmin ? "🛡️ " : "👤 "} {user?.username}
-                </span>
+                </Link>
                 <button className="btn btn-outline-sm" onClick={handleLogout}>
                   Logout
                 </button>

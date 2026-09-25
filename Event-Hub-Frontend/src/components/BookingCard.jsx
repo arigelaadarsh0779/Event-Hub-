@@ -48,11 +48,17 @@ const BookingCard = ({ booking, onCancelled }) => {
     });
   };
 
+  const handleDownloadPdf = () => {
+    const apiBaseUrl = import.meta.env.VITE_API_URL || "http://localhost:8080";
+    const pdfUrl = `${apiBaseUrl}/api/tickets/pdf/${booking.bookingid}`;
+    window.open(pdfUrl, "_blank");
+  };
+
   return (
     <div className={`booking-card ${booking.status === "CANCELLED" ? "booking-cancelled" : ""}`}>
       <div className="booking-card-header">
         <div>
-          <span className="booking-number">{booking.BookingNumber}</span>
+          <span className="booking-number">{booking.BookingNumber || `BK-#${booking.bookingid}`}</span>
           <p className="booking-date">{formatDate(booking.bookingDate)}</p>
         </div>
         <span className={`badge ${statusClass}`}>
@@ -84,28 +90,45 @@ const BookingCard = ({ booking, onCancelled }) => {
       </div>
 
       {booking.status !== "CANCELLED" && (
-        <div className="booking-card-footer">
-          {booking.status === "PENDING" && (
-            <button
-              className="btn btn-primary-sm"
-              onClick={handleProceedToPayment}
-              style={{ marginRight: "auto" }}
-            >
-              Pay Now 💳
-            </button>
-          )}
+        <div className="booking-card-footer" style={{ flexDirection: "column", alignItems: "stretch", gap: "0.75rem" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            {booking.status === "PENDING" && (
+              <button
+                className="btn btn-primary-sm"
+                onClick={handleProceedToPayment}
+              >
+                Pay Now 💳
+              </button>
+            )}
 
-          <button
-            className="btn btn-danger-sm"
-            onClick={handleCancel}
-            disabled={cancelling || booking.status === "CONFIRMED"}
-            title={booking.status === "CONFIRMED" ? "Confirmed bookings cannot be cancelled" : "Cancel this booking"}
-          >
-            {cancelling ? "Cancelling..." : "Cancel Booking"}
-          </button>
+            {booking.status !== "CONFIRMED" && (
+              <button
+                className="btn btn-danger-sm"
+                onClick={handleCancel}
+                disabled={cancelling}
+              >
+                {cancelling ? "Cancelling..." : "Cancel Booking"}
+              </button>
+            )}
+          </div>
 
           {booking.status === "CONFIRMED" && (
-            <span className="cancel-note">✅ Payment confirmed — ticket sent to email</span>
+            <div style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap", width: "100%" }}>
+              <button
+                className="btn btn-primary-sm"
+                onClick={handleDownloadPdf}
+                style={{ flex: 1 }}
+              >
+                📥 Download PDF Ticket
+              </button>
+              <button
+                className="btn btn-outline-sm"
+                onClick={handleDownloadPdf}
+                style={{ flex: 1 }}
+              >
+                👁️ View Ticket PDF
+              </button>
+            </div>
           )}
         </div>
       )}

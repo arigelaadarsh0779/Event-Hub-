@@ -5,15 +5,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class ErrorResponseDto {
+    private LocalDateTime timestamp;
+    private int status;
+    private String errorMessage;
 
-        private LocalDateTime timestamp;
-        private int status;
-        private String errorMessage;
-
-
+    public String getMessage() {
+        return errorMessage;
+    }
 }

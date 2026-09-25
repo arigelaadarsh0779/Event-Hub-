@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import com.project.Event_Hub.Notification.EmailSender;
 import java.util.List;
 
 @Service
@@ -27,6 +28,7 @@ public class BookingService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final BookingMapper bookingMapper;
+    private final EmailSender emailSender;
 
 
     // CREATE BOOKING
@@ -189,5 +191,60 @@ public class BookingService {
                         new EventNotFoundException("Event not found"));
 
         return event.getAvailableSeats();
+    }
+
+    // CONFIRM BOOKING & SEND BOOKING SUCCESS EMAIL
+    public BookingResponseDto confirmBookingById(long id) {
+        Bookings booking = bookingsRepository.findById(id)
+                .orElseThrow(() -> new BookingsNotFoundException("Booking not found"));
+
+        if (booking.getStatus() == BookingStatus.CONFIRMED) {
+            throw new RuntimeException("Booking is already confirmed");
+        }
+
+        booking.setStatus(BookingStatus.CONFIRMED);
+        Bookings confirmedBooking = bookingsRepository.save(booking);
+
+        // Send Booking Success Email upon booking confirmation
+        sendBookingSuccessEmail(confirmedBooking);
+
+        return bookingMapper.convertObjtoResponse(confirmedBooking);
+    }
+
+    // SEND BOOKING SUCCESS EMAIL UPON BOOKING CONFIRMATION
+    public void sendBookingSuccessEmail(Bookings booking) {
+        if (booking == null || booking.getUser() == null || booking.getUser().getEmail() == null) {
+            return;
+        }
+
+        try {
+            String email = booking.getUser().getEmail();
+            String username = booking.getUser().getUsername();
+            String eventTitle = booking.getEvent() != null ? booking.getEvent().getTitle() : "Event";
+            String venue = booking.getEvent() != null ? booking.getEvent().getVenue() : "TBA";
+            String date = booking.getEvent() != null && booking.getEvent().getDate() != null ? booking.getEvent().getDate().toString() : "TBA";
+
+            String subject = "🎉 Booking Success - " + eventTitle;
+            String body = "Hello " + username + ",\n\n" +
+                          "🎉 Your booking for " + eventTitle + " is CONFIRMED!\n\n" +
+                          "Booking Details:\n" +
+                          "• Booking ID: #" + booking.getBookingId() + "\n" +
+                          "• Booking Ref: " + booking.getBookingNumber() + "\n" +
+                          "• Event: " + eventTitle + "\n" +
+                          "• Date: " + date + "\n" +
+                          "• Venue: " + venue + "\n" +
+                          "• Reserved Seats: " + booking.getNumberOfSeats() + "\n" +
+                          "• Total Amount: ₹" + booking.getTotalAmount() + "\n" +
+                          "• Status: CONFIRMED\n\n" +
+                          "Your ticket with QR code is generated and attached to your account. You can download your PDF ticket anytime from your Event Hub account under 'My Bookings'.\n\n" +
+                          "Thank you for booking with Event Hub!\n\n" +
+                          "Best regards,\n" +
+                          "Event Hub Team";
+
+            emailSender.sendEmail(email, subject, body);
+            System.out.println("Booking success email sent to " + email);
+        } catch (Exception e) {
+            System.out.println("Could not send booking success email: " + e.getMessage());
+        }
     }
 }

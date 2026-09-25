@@ -1,4 +1,4 @@
-﻿import api from "./api";
+import api from "./api";
 
 // POST /api/user/createbooking
 // Backend expects: { eventId, userId, numberOfSeats }
@@ -17,3 +17,7 @@ export const cancelBooking = (bookingId) =>
 // GET /api/user/availability/{eventId} - Get remaining seats for an event
 export const checkAvailability = (eventId) =>
   api.get(`/api/user/availability/${eventId}`);
+
+// PUT /api/user/confirm/{bookingId} - Confirm booking & trigger booking success email
+export const confirmBooking = (bookingId) =>
+  api.put(`/api/user/confirm/${bookingId}`);

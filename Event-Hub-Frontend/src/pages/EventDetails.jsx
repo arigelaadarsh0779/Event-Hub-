@@ -4,6 +4,7 @@ import { getAllEvents } from "../services/eventService";
 import { createBooking } from "../services/bookingService";
 import { deleteEvent } from "../services/adminService";
 import { useAuth } from "../context/AuthContext";
+import { getErrorMessage } from "../services/api";
 import Loading from "../components/Loading";
 import toast from "react-hot-toast";
 
@@ -60,8 +61,8 @@ const EventDetails = () => {
         state: { booking: bookingData, event },
       });
     } catch (err) {
-      const msg = err.response?.data?.message || err.response?.data || "Booking failed. Please try again.";
-      toast.error(String(msg));
+      const msg = getErrorMessage(err, "Booking failed. Please try again.");
+      toast.error(msg);
     } finally {
       setBooking(false);
     }
@@ -78,7 +79,7 @@ const EventDetails = () => {
       toast.success("Event deleted successfully! 🗑️");
       navigate("/admin/events");
     } catch (err) {
-      toast.error(err.response?.data || "Failed to delete event.");
+      toast.error(getErrorMessage(err, "Failed to delete event."));
       setDeleting(false);
     }
   };

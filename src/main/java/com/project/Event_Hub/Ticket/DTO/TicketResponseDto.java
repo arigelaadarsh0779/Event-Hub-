@@ -21,4 +21,15 @@ public class TicketResponseDto {
     private LocalDateTime generatedAt;
     @Enumerated(EnumType.STRING)
     private TicketEnum status;
-}
+
+    // Event details
+    private String eventTitle;
+    private String eventVenue;
+    private String eventDate;
+    private String eventTime;
+    private String eventTheme;
+
+    // Booking details
+    private int numberOfSeats;
+    private String userName;
+}

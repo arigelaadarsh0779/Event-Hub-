@@ -27,6 +27,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.project.Event_Hub.Booking.Service.BookingService;
+
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
@@ -36,6 +38,7 @@ public class PaymentService {
     private final PaymentMapper paymentMapper;
     private final EmailSender emailSender;
     private final TicketService ticketService;
+    private final BookingService bookingService;
 
     @Value("${razorpay.key.id}")
     private String keyId;
@@ -190,41 +193,19 @@ public class PaymentService {
         }
 
         // ==========================================
-        // SEND EMAIL
+        // SEND BOOKING SUCCESS EMAIL (UPON BOOKING CONFIRMATION)
         // ==========================================
 
         try {
 
-            emailSender.sendEmail(
-                    user.getEmail(),
-                    "Booking Confirmed",
-                    "Hello " + user.getUsername() + ",\n\n" +
-                            "🎉 Your payment was successful and your booking is confirmed!\n\n" +
+            bookingService.sendBookingSuccessEmail(booking);
 
-                            "Booking Details\n" +
-                            "Booking ID: " + booking.getBookingId() + "\n" +
-                            "Booking Number: " + booking.getBookingNumber() + "\n" +
-                            "Event: " + event.getTitle() + "\n" +
-                            "Number of Seats: " + booking.getNumberOfSeats() + "\n" +
-                            "Booking Status: CONFIRMED\n\n" +
-
-                            "Payment Details\n" +
-                            "Payment ID: " + payment.getRazorpayPaymetId() + "\n" +
-                            "Amount Paid: ₹" + payment.getAmount() + "\n" +
-                            "Payment Status: SUCCESS\n\n" +
-
-                            "Your ticket has been generated.\n\n" +
-
-                            "Thank you for booking with Event Hub!\n\n" +
-                            "Event Hub Team"
-            );
-
-            System.out.println("Confirmation email sent successfully");
+            System.out.println("Booking success email sent successfully");
 
         } catch (Exception e) {
 
             System.out.println(
-                    "Email sending failed, but payment was successful: "
+                    "Booking email sending failed: "
                             + e.getMessage()
             );
         }
